@@ -28,7 +28,7 @@ class MoveRequestControllerUnitTest {
 
     @Test
     void createMoveRequest_shouldReturnCreated() {
-        MoveRequest moveRequest = new MoveRequest(1, "Bob Baumeister", "Mühlgasse 45", "Mühlgasse 342", LocalDate.parse("2025-07-31"));
+        MoveRequest moveRequest = new MoveRequest(1L, "Bob Baumeister", "Mühlgasse 45", "Mühlgasse 342", LocalDate.parse("2025-07-31"));
 
         when(moveRequestService.createMoveRequest(any(MoveRequest.class))).thenReturn(moveRequest);
 
@@ -42,8 +42,8 @@ class MoveRequestControllerUnitTest {
 
     @Test
     void getAllMoveRequests_shouldReturnMoveRequestList() {
-        MoveRequest request1 = new MoveRequest(1, "Alice", "Street 1", "Street 2", LocalDate.now());
-        MoveRequest request2 = new MoveRequest(2, "Bob", "Street 3", "Street 4", LocalDate.now());
+        MoveRequest request1 = new MoveRequest(1L, "Alice", "Street 1", "Street 2", LocalDate.now());
+        MoveRequest request2 = new MoveRequest(2L, "Bob", "Street 3", "Street 4", LocalDate.now());
 
         List<MoveRequest> moveRequests = List.of(request1, request2);
 
@@ -54,7 +54,7 @@ class MoveRequestControllerUnitTest {
         assertThat(response).isNotNull();
         assertThat(response.getBody()).hasSize(2);
         assertThat(response.getBody().get(0).getName()).isEqualTo(request1.getName());
-        assertThat(response.getBody().get(1).getName()).isEqualTo(request1.getName());
+        assertThat(response.getBody().get(1).getName()).isEqualTo(request2.getName());
 
         verify(moveRequestService, times(1)).getAllMoveRequests();
     }

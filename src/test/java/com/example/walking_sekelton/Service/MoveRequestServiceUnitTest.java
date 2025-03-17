@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +32,7 @@ class MoveRequestServiceUnitTest {
 
     @Test
     void shouldCreateMoveRequest() {
-        MoveRequest moveRequest = new MoveRequest(1L, "John Doe", "45 Main St", "123 Main St", "2025-04-01");
+        MoveRequest moveRequest = new MoveRequest(1L, "John Doe", "45 Main St", "123 Main St", LocalDate.now());
         when(moveRequestRepository.save(any(MoveRequest.class))).thenReturn(moveRequest);
 
         MoveRequest savedRequest = moveRequestService.createMoveRequest(moveRequest);
@@ -43,8 +44,8 @@ class MoveRequestServiceUnitTest {
     @Test
     void shouldReturnAllMoveRequests() {
         List<MoveRequest> moveRequests = Arrays.asList(
-                new MoveRequest(1L, "John Doe", "45 Main St", "123 Main St", "2025-04-01"),
-                new MoveRequest(2L, "Jane Doe", "10 Main St", "50 Main St", "2025-05-01")
+                new MoveRequest(1L, "John Doe", "45 Main St", "123 Main St", LocalDate.now()),
+                new MoveRequest(2L, "Jane Doe", "10 Main St", "50 Main St", LocalDate.now())
         );
         when(moveRequestRepository.findAll()).thenReturn(moveRequests);
 
