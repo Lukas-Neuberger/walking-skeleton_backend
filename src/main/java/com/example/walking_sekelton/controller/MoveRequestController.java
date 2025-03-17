@@ -1,27 +1,32 @@
 package com.example.walking_sekelton.controller;
 
 import com.example.walking_sekelton.model.MoveRequest;
+import com.example.walking_sekelton.service.MoveRequestService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/move-requests")
 public class MoveRequestController {
 
-    private final List<MoveRequest> moveRequests = new ArrayList<>();
+    private final MoveRequestService moveRequestService;
+
+    public MoveRequestController(MoveRequestService moveRequestService) {
+        this.moveRequestService = moveRequestService;
+    }
 
     @PostMapping
-    public ResponseEntity<String> createMoveRequest(@Valid @RequestBody MoveRequest moveRequest) {
-        moveRequests.add(moveRequest);
-        return ResponseEntity.status(201).body("Move request successfully created");
+    public ResponseEntity<MoveRequest> createMoveRequest(@Valid @RequestBody MoveRequest moveRequest) {
+        MoveRequest savedRequest = moveRequestService.createMoveRequest(moveRequest);
+        return ResponseEntity.status(201).body(savedRequest);
     }
 
     @GetMapping
-    public ResponseEntity<List<MoveRequest>> getMoveRequests() {
-        return ResponseEntity.ok(moveRequests);
+    public ResponseEntity<List<MoveRequest>> getAllMoveRequests() {
+        return ResponseEntity.ok(moveRequestService.getAllMoveRequests());
     }
 }

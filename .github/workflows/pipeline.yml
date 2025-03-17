@@ -54,5 +54,7 @@ jobs:
 
       - name: Run Unit Tests
         run: ./gradlew test
+        env:
+          SPRING_PROFILES_ACTIVE: test
 
 
