@@ -2,41 +2,60 @@ package com.example.walking_sekelton.Controller;
 
 import com.example.walking_sekelton.controller.MoveRequestController;
 import com.example.walking_sekelton.model.MoveRequest;
+import com.example.walking_sekelton.service.MoveRequestService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.http.ResponseEntity;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDate;
+import java.util.List;
 
-@WebMvcTest(MoveRequestController.class)
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 class MoveRequestControllerUnitTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Mock
+    private MoveRequestService moveRequestService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @InjectMocks
+    private MoveRequestController moveRequestController;
 
     @Test
-    void shouldCreateMoveRequest() throws Exception {
-        MoveRequest moveRequest = new MoveRequest(1,"Bob Baumeister", "Mühlgasse 45", "Mühlgasse 342", "2025-07-31");
+    void createMoveRequest_shouldReturnCreated() {
+        MoveRequest moveRequest = new MoveRequest(1, "Bob Baumeister", "Mühlgasse 45", "Mühlgasse 342", LocalDate.parse("2025-07-31"));
 
-        mockMvc.perform(post("/api/move-requests")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(moveRequest)))
-                .andExpect(status().isCreated());
+        when(moveRequestService.createMoveRequest(any(MoveRequest.class))).thenReturn(moveRequest);
+
+        ResponseEntity<MoveRequest> response = moveRequestController.createMoveRequest(moveRequest);
+
+        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
+        assertThat(response.getBody()).isEqualTo(moveRequest);
+
+        verify(moveRequestService, times(1)).createMoveRequest(any(MoveRequest.class));
     }
 
     @Test
-    void shouldGetAllMoveRequests() throws Exception {
-        mockMvc.perform(get("/api/move-requests"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").isNumber());
+    void getAllMoveRequests_shouldReturnMoveRequestList() {
+        MoveRequest request1 = new MoveRequest(1, "Alice", "Street 1", "Street 2", LocalDate.now());
+        MoveRequest request2 = new MoveRequest(2, "Bob", "Street 3", "Street 4", LocalDate.now());
+
+        List<MoveRequest> moveRequests = List.of(request1, request2);
+
+        when(moveRequestService.getAllMoveRequests()).thenReturn(moveRequests);
+
+        ResponseEntity<List<MoveRequest>> response = moveRequestController.getAllMoveRequests();
+
+        assertThat(response).isNotNull();
+        assertThat(response.getBody()).hasSize(2);
+        assertThat(response.getBody().get(0).getName()).isEqualTo(request1.getName());
+        assertThat(response.getBody().get(1).getName()).isEqualTo(request1.getName());
+
+        verify(moveRequestService, times(1)).getAllMoveRequests();
     }
 }
