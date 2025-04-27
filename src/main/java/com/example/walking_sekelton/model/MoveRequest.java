@@ -7,12 +7,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-
 
 @Data
 @AllArgsConstructor
@@ -21,20 +19,19 @@ import java.time.LocalDate;
 @Table(name = "move_requests")
 public class MoveRequest {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @NotBlank(message = "Name is required")
-    private String name;
+  @NotBlank(message = "Name is required")
+  private String name;
 
-    @NotBlank(message = "Old address is required")
-    private String oldAddress;
+  @NotBlank(message = "Old address is required")
+  private String oldAddress;
 
-    @NotBlank(message = "New address is required")
-    private String newAddress;
+  @NotBlank(message = "New address is required")
+  private String newAddress;
 
-    @NotNull(message = "Date is required")
-    private LocalDate date;
+  @NotNull(message = "Date is required")
+  private LocalDate date;
 }
-
